@@ -17,12 +17,12 @@ This is the oldest problem. When she was first seen on 7 May, the parents report
 Cough for two weeks and fever in June, diagnosed as tonsillitis. Her tonsils were still enlarged when checked a month later on 20 July.
 
 **Story three: the current illness, still unresolved.**
-Started around 17 August with swelling around her left eye. Then a low-grade fever that has not gone away. On 21 August her inflammation marker (CRP) came back at 96, which is high. Dengue was tested and is negative. Liver and kidney function are fine. She was started on an antibiotic. **Blood culture was sent and the result is not in your papers.**
+Started around 17 August with swelling around her left eye. Then a low-grade fever that has not gone away. On 21 August her inflammation marker (CRP) came back raised, though by a method that only reports coarse steps — see below. Her white cell count was normal with a shift towards lymphocytes. Dengue was tested and is negative. Liver and kidney function are fine. She was started on an antibiotic. **Blood culture was sent and the result is not in your papers.**
 
 **Story four: her weight has been slipping.**
 16.4 kg at the end of May, 15.6 kg by mid-August. That is about 800 grams down over eleven weeks, in a child who should be slowly gaining.
 
-**In one sentence:** a three-year-old with a long-running irritation problem in the genital area that has mostly *not* been proven to be urine infection, plus recurring throat infections, currently in the middle of an unexplained fever with a high inflammation marker and no diagnosis yet.
+**In one sentence:** a three-year-old with a long-running irritation problem in the genital area that has mostly *not* been proven to be urine infection, plus recurring throat infections, currently in the middle of an unexplained fever with a raised inflammation marker and no diagnosis yet.
 
 ---
 
@@ -40,7 +40,7 @@ This is a known and widespread problem, not a fault unique to this lab. The Cana
 
 **What this means:** those three alarming-looking flags most likely mean nothing. She does not appear to be anaemic on this evidence. Her kidney function looks normal for her age. Worth confirming with the paediatrician rather than assuming, but do not go into the appointment worried about anaemia.
 
-**What is genuinely abnormal:** the CRP of 96. That flag stands.
+**What is genuinely abnormal:** the CRP is raised. But see section 3.3 — the number is coarser than it looks, and it cannot separate viral from bacterial on its own.
 
 ---
 
@@ -107,139 +107,31 @@ NICE guideline NG224 (Urinary tract infection in under 16s, 2022):
 
 Whether she formally counts as "recurrent UTI" — and therefore whether a DMSA scan is warranted — depends on how many episodes were culture-confirmed. On the evidence here, only one was. That is a specific question for the paediatrician, and the answer changes what imaging is appropriate.
 
-### 3.3 The CRP of 96
+### 3.3 The CRP — the number is coarser than it looks
 
-CRP is a general inflammation marker. It tells you something is inflamed; it does not tell you what or where.
+**Correction to what I told you earlier.** I treated 96 as a precise measurement. It is not. You spotted this and you were right.
 
-- CRP above **40 mg/L** has about **88% specificity** for bacterial rather than viral infection, with a positive predictive value around 76%
-- CRP of **100 mg/L or more** is strongly associated with bacterial infection
-- At 96 she sits just under that upper threshold — high, and pointing towards bacterial, but not conclusive
-- **Important caveat:** some viruses, notably adenovirus, can drive CRP over 100. A high CRP alone is not proof of bacterial infection
-- CRP below 40 does not rule bacterial infection out either; sensitivity is only around 55%
+**How the number was produced.** The report prints `C-REACTIVE PROTEIN (CRP) TITER :- 96`. The word *titer* is the giveaway. This is a **latex agglutination slide test**: serum is diluted 1:2, 1:4, 1:8, 1:16 and so on, and the technician reports the last dilution at which visible clumping occurs. Concentration is then calculated as the reagent sensitivity, 6 mg/L, multiplied by that dilution.
 
-Her CRP was 48 on 18 July and 96 on 21 August. These are **two separate illness episodes five weeks apart**, not one rising trend. Do not read them as a curve.
+That is exactly why her two results are 48 and 96. **6 × 8 = 48. 6 × 16 = 96.** The only values this test can ever return are 6, 12, 24, 48, 96, 192, 384.
 
-### 3.4 Prolonged fever in a Nepali child — what else is usually considered
+Three consequences:
 
-This is where local context matters more than international guidelines.
+1. **96 does not mean 96.** It means the sample still clumped at 1:16 but not at 1:32, so the true value sits somewhere between roughly 96 and 191 mg/L.
+2. **48 → 96 is a single rung** on the ladder — the smallest change the method can register. It could be a real rise, or two runs landing either side of one dilution.
+3. This is not a criticism of the lab. Latex agglutination is legitimate, cheap and widely used. It is simply less precise than the immunoturbidimetric CRP a larger laboratory would run.
 
-Published Nepali paediatric studies describe a standard workup for a child with fever lasting more than about four days: malaria smear and rapid test, dengue NS1 antigen and IgM, **urine and blood cultures**, and **scrub typhus IgM ELISA**.
+**What a number in that band means.** You suggested it might be compatible with viral fever. The literature supports that:
 
-Two points stand out for Divina:
+- CRP **cannot** distinguish bacterial from viral at moderate elevations of roughly **10 to 80 mg/L** — the overlap is substantial
+- Research looking specifically at the **50 to 100 mg/L band** found CRP could not significantly separate bacterial from viral cases within it
+- Above 100 mg/L the bacterial association strengthens, but adenovirus and several other viruses regularly push CRP past 100
+- **Serial measurements beat any single value.** Falling supports the treatment working; rising suggests deterioration
 
-**Blood culture.** In Nepal this is primarily looking for enteric fever (typhoid). It was ordered on 21 August. **The result is not in your papers and is the single most important outstanding item.** Cultures typically take 48–72 hours.
+**What sits alongside it in her case.** On 21 August her total white cell count was **normal at 9,400**. Lymphocytes had risen to 40% and neutrophils fallen to 55%, against 30% and 65% in July. A normal white count with a lymphocyte-predominant differential is a pattern seen more often in **viral** illness. A bacterial infection driving CRP into that range would more typically bring a raised white count with neutrophilia — which is what July looked like and August does not.
 
-**Scrub typhus.** A PLOS One study of children in central Nepal found scrub typhus is a significant and frequently missed cause of unexplained fever, and that the most common *wrong* provisional diagnosis given to these children was enteric fever, followed by meningitis and sepsis. It is diagnosed by IgM ELISA — **a blood culture will not find it**. Cases peak in the monsoon and post-monsoon months, which includes August. Presenting features in that study included fever, headache, vomiting, abdominal pain and cough. An eschar (a small dark scab at a bite site) is the classic clue when present.
+None of that is proof either way. It is a reason to want the blood culture result and a repeat CRP, rather than to assume the antibiotic is treating the right thing.
 
-Given she presented with an unexplained swelling around one eye that was attributed to a possible insect bite, and then developed persistent fever, **scrub typhus is a reasonable thing to ask whether it has been considered.** Dengue has already been excluded.
+**Ask the doctor:** can a quantitative CRP be run instead of the latex slide test, and can it be repeated now to see the direction of travel?
 
-### 3.5 The weight loss
 
-Guidance from the Royal Children's Hospital on slow weight gain, and NICE NG75 on faltering growth:
-
-- NICE defines concern by **falls across weight centile spaces**, not by absolute kilograms — so this needs plotting on a growth chart, not eyeballing
-- RCH investigation list for a child over 12 months: urinalysis and culture, full blood count, **ferritin**, electrolytes, thyroid function, glucose, liver function, **coeliac serology**, B12, stool studies, plus **ESR and faecal calprotectin**
-- RCH notes that hidden urinary tract infection is a recognised cause of poor weight gain
-- Most cases are simply inadequate calorie intake, and there is not always an underlying disease
-
-**Context that softens this:** on 20 July she was recorded at the **88th centile for weight** with a BMI on the **86th centile**, described as "at risk of overweight". She started from an above-average position. A fall from there is less alarming than the same fall from the 15th centile. Repeated infections over the same period also suppress appetite.
-
-**Context that keeps it on the list:** it is still the wrong direction over eleven weeks, it overlaps a period of unexplained inflammation, and much of the RCH investigation list has already been done incidentally — full blood count, LFT, RFT and urine are all in the file. Ferritin, thyroid and coeliac serology have not been. Plotting the weights on a proper chart costs nothing and would settle it.
-
-### 3.6 The eye swelling
-
-RCH and Canadian Paediatric Society guidance on periorbital swelling:
-
-- **Suggests allergy:** swelling on both sides, painless, not tender, child otherwise well, responds to antihistamines
-- **Suggests preseptal (periorbital) cellulitis:** infection of the skin in front of the eye socket, needs antibiotics
-- **Red flags for orbital cellulitis, the dangerous one:** pain on moving the eye or restricted eye movement, the eye pushed forward (proptosis), swollen conjunctiva, reduced vision, double vision, abnormal pupil reaction, or a child who looks unwell, toxic and febrile. Contrast CT imaging is used when orbital involvement is suspected.
-
-**How this applies:** her swelling was recorded as **left-sided only**, on and off, with a fever episode. One-sided is less typical of a straightforward allergy. Fexofenadine, an antihistamine, was prescribed, which fits the allergy interpretation. Dr Khatri advised an **ophthalmology consult if needed** on 17 August, and there is no record it happened. Given the fever then persisted, that referral is worth revisiting.
-
----
-
-## Part 4 — Questions to take to the paediatrician
-
-Ordered by how much the answer changes what happens next.
-
-**Chase these results — they exist somewhere**
-1. What did the **blood culture from 21 August** grow?
-2. What did the **urine R/E and urine culture from 21 August** show?
-3. What did the **urine culture from 18 July** show? It was sent and never followed up in the notes.
-
-**About the current fever**
-4. Has **scrub typhus** been considered, and should an IgM ELISA be sent? It is common in Nepal in August, is regularly missed, and is not detected by blood culture.
-5. Should the CRP be repeated to see whether it is falling on the antibiotic?
-6. What are the specific danger signs that mean we come straight back rather than wait?
-
-**About the recurring urinary and vulval problem**
-7. Was the **ultrasound of abdomen and pelvis** advised on 31 May ever done? If not, should it be done now?
-8. Given only **one of five urine cultures grew anything**, how many of these episodes were genuine urine infections, and how many were vulval irritation causing burning and contaminated samples?
-9. Does she meet the definition of recurrent UTI, and if so does she need a DMSA scan?
-10. Can we go through the **non-medication vulval care measures** properly — soap-free bathing, cotton underwear, barrier cream, vinegar baths, wiping technique?
-11. Should we do a **sticky-tape test for threadworm**? Her stool test was clear but that test misses threadworm.
-12. Is her **constipation** currently controlled? It is a documented past problem and it makes both urinary and vulval symptoms worse.
-
-**About the eye**
-13. Should the **ophthalmology consult** advised on 17 August now go ahead, given the fever that followed?
-14. The swelling was left-sided only. Does that change the working diagnosis of allergy?
-
-**About growth and general**
-15. Can her weights be **plotted on a growth chart** and a height taken? Only one height exists in the whole file, from 20 July.
-16. Should **ferritin, thyroid function and coeliac serology** be added, per the standard slow-weight-gain workup?
-17. **Immunisation status is contradictory** in the notes — "complete" on 17 May, "EPI scheduled / update immunisation" on 20 July. Which is right?
-18. Is the **Karuna duplicate record** a problem? The 28 May report is filed under "Devina Thapa", hospital ID 124916, while everything else is "Divina Thapa", ID 124721.
-19. What was the **third syrup** prescribed on 21 August? The handwriting is illegible.
-
-**About joined-up care**
-20. Scheer Memorial and K.B. Hospital have both been treating her without visible access to each other's notes. Should one paediatrician hold the whole picture?
-
----
-
-## Sources
-
-Urinary tract infection and imaging
-- [NICE NG224 — Urinary tract infection in under 16s: diagnosis and management](https://www.nice.org.uk/guidance/ng224)
-- [NICE NG224 — Recommendations](https://www.nice.org.uk/guidance/ng224/chapter/Recommendations)
-- [Urinary tract infection in children — NCBI Bookshelf NBK551048](https://www.ncbi.nlm.nih.gov/books/NBK551048/)
-- [Recurrent urinary tract infection — Patient.info professional reference](https://patient.info/doctor/infectious-disease/recurrent-urinary-tract-infection)
-- [Urinary tract infection in children: recurrent infections — PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC4463760/)
-
-Vulvovaginitis in prepubertal girls
-- [Royal Children's Hospital Melbourne — Vulval and vaginal conditions clinical practice guideline](https://www.rch.org.au/clinicalguide/guideline_index/Vulval_and_Vaginal_Conditions/)
-- [NHS Greater Glasgow & Clyde — Vulvovaginitis: advice for referrers](https://www.clinicalguidelines.scot.nhs.uk/rhc-for-health-professionals/guidelines/primary-care-referral-guidelines/medical-paediatric-pre-referral-guidance/vulvovaginitis-advice-for-referrers/)
-- [Gorbachinsky et al. — Altered perineal microbiome is associated with vulvovaginitis and urinary tract infection in preadolescent girls, Therapeutic Advances in Urology 2014](https://journals.sagepub.com/doi/10.1177/1756287214542097)
-- [Microbiological findings in prepubertal and pubertal girls with vulvovaginitis — PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9649474/)
-- [Nationwide Children's Hospital — Prepubertal vulvovaginitis: causes, treatment and prevention](https://www.nationwidechildrens.org/family-resources-education/700childrens/2024/07/prepubertal-vulvovaginitis-causes-treatment-and-prevention)
-- [RCH Kids Health Info — Vulvovaginitis](https://www.rch.org.au/kidsinfo/fact_sheets/vulvovaginitis/)
-
-CRP interpretation
-- [C-reactive protein in pediatric infectious diseases — ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S2212832812000094)
-- [Evaluation of CRP as a marker for bacterial infection and malaria in febrile children — PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10361518/)
-- [A new biomarker combination differentiates viral from bacterial infections in hospitalized children — Scientific Reports 2025](https://www.nature.com/articles/s41598-025-20208-1)
-
-Fever in Nepal
-- [Clinical profile, complications and outcome of scrub typhus in children: a hospital based observational study in central Nepal — PLOS One](https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0220905)
-- [Scrub typhus in children at Tribhuvan University Teaching Hospital, Nepal — PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC7335309/)
-- [Epidemiology, risk factors and seasonal variation of scrub typhus fever in central Nepal — PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6473611/)
-
-Blood results and paediatric reference ranges
-- [WHO 2024 — Guideline on haemoglobin cutoffs to define anaemia in individuals and populations (NCBI Bookshelf)](https://www.ncbi.nlm.nih.gov/books/NBK602185/)
-- [Dallman & Siimes — Developmental change in red blood cell volume, Journal of Pediatrics](https://www.sciencedirect.com/science/article/abs/pii/S0022347676803903)
-- [Reference intervals for haemoglobin and MCV in an ethnically diverse community sample of Canadian children — BMC Pediatrics](https://link.springer.com/article/10.1186/s12887-021-02709-w)
-- [Serum creatinine reference limits in the paediatric population — Frontiers in Pediatrics](https://www.frontiersin.org/journals/pediatrics/articles/10.3389/fped.2021.793446/full)
-- [The Canadian Laboratory Initiative on Pediatric Reference Intervals: a CALIPER white paper](https://www.tandfonline.com/doi/full/10.1080/10408363.2017.1379945)
-- [Paediatric reference intervals: current status, gaps, challenges and future considerations — PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC7255313/)
-
-Growth
-- [NICE NG75 — Faltering growth: recognition and management](https://www.nice.org.uk/guidance/ng75/chapter/recommendations)
-- [Royal Children's Hospital Melbourne — Slow weight gain clinical practice guideline](https://www.rch.org.au/clinicalguide/guideline_index/Slow_weight_gain/)
-
-Periorbital swelling
-- [Royal Children's Hospital Melbourne — Periorbital and orbital cellulitis](https://www.rch.org.au/clinicalguide/guideline_index/Periorbital_and_orbital_cellulitis/)
-- [Canadian Paediatric Society — Preseptal and orbital cellulitis in otherwise healthy children and youth](https://cps.ca/en/documents/position/preseptal-orbital-cellulitis)
-- [Periorbital cellulitis — StatPearls, NCBI Bookshelf](https://www.ncbi.nlm.nih.gov/books/NBK470408/)
-
----
-
-*Guidelines quoted are British, Australian and Canadian, plus Nepali research where local disease patterns matter. Practice in Nepal may differ for good reasons. Nothing here is a diagnosis or a treatment recommendation. Take it to the paediatrician as questions, not conclusions.*

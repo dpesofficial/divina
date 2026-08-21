@@ -27,7 +27,12 @@
     pill:   '<rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="M8.5 8.5 15.5 15.5"/>',
     flask:  '<path d="M9 3h6"/><path d="M10 3v6.5L4.6 18a2 2 0 0 0 1.7 3h11.4a2 2 0 0 0 1.7-3L14 9.5V3"/>',
     stetho: '<path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v2a5 5 0 0 0 10 0v-1"/><circle cx="20" cy="12" r="2"/>',
-    doc:    '<path d="M14 3v5h5"/><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>'
+    doc:    '<path d="M14 3v5h5"/><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>',
+    brain:  '<path d="M12 5a3 3 0 0 0-6 .6A2.6 2.6 0 0 0 4 8.2a2.7 2.7 0 0 0 .9 2A2.8 2.8 0 0 0 6 15.4 2.8 2.8 0 0 0 12 17z"/><path d="M12 5a3 3 0 0 1 6 .6A2.6 2.6 0 0 1 20 8.2a2.7 2.7 0 0 1-.9 2 2.8 2.8 0 0 1-1.1 5.2A2.8 2.8 0 0 1 12 17z"/><path d="M12 5v14"/>',
+    cal:    '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    shield: '<path d="M12 3 4 6v6c0 4.6 3.2 8.3 8 9 4.8-.7 8-4.4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+    wrench: '<path d="M14.5 6.5a4.5 4.5 0 0 0 5.9 5.9L21 21H3l8.6-.6a4.5 4.5 0 0 0 5.9-5.9"/><path d="M3.5 3.5 9 9"/>'
   };
   function svg(name, cls) {
     return '<svg class="' + (cls || "") + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
@@ -194,12 +199,15 @@
     var nPos = URINE_TABLE.rows.filter(function (r) { return r.culture === "E. COLI"; }).length;
     var nCult = URINE_TABLE.rows.filter(function (r) { return r.culture !== "not done" && r.culture !== "—"; }).length;
     h += '<div class="stats">' +
-      '<div class="stat crit"><div class="stat-v">96<small>mg/L</small></div><div class="stat-l">CRP · normal &lt; 6</div></div>' +
-      '<div class="stat"><div class="stat-v">' + TIMELINE.filter(function (e) { return e.kind === "visit"; }).length + "</div>" +
-        '<div class="stat-l">Clinic visits</div></div>' +
-      '<div class="stat"><div class="stat-v">' + nPos + " / " + nCult + '</div><div class="stat-l">Positive urine cultures</div></div>' +
-      '<div class="stat warn"><div class="stat-v">' + OUTSTANDING.length + '</div><div class="stat-l">Results missing</div></div>' +
-    "</div>";
+      '<button class="stat crit" data-stat="crp"><div class="stat-v">~96<small>mg/L</small></div><div class="stat-l">CRP estimate · tap</div></button>' +
+      '<button class="stat" data-stat="visits"><div class="stat-v">' + TIMELINE.filter(function (e) { return e.kind === "visit"; }).length + "</div>" +
+        '<div class="stat-l">Clinic visits · tap</div></button>' +
+      '<button class="stat" data-stat="cultures"><div class="stat-v">' + nPos + " / " + nCult + '</div><div class="stat-l">Positive cultures · tap</div></button>' +
+      '<button class="stat warn" data-stat="missing"><div class="stat-v">' + OUTSTANDING.length + '</div><div class="stat-l">Results missing · tap</div></button>' +
+    '</div><div id="statDetail"></div>';
+
+    h += '<div class="sec-h">Medication running now</div>';
+    h += medSchedule();
 
     h += '<div class="sec-h">Key findings</div>';
     h += KEY_FINDINGS.map(function (k) {
@@ -222,12 +230,7 @@
         '<div class="out-w">' + esc(o.why) + "</div></div></div>";
     }).join("") + "</div>";
 
-    h += '<div class="sec-h">Current medication</div>';
-    h += '<div class="card">' + STATUS.currentMeds.map(function (m) {
-      return '<div class="med cur"><div class="med-top"><div class="med-n">' + esc(m.name) + '</div><div class="med-d">' + esc(m.course) + "</div></div>" +
-        '<div class="med-g">' + esc(m.generic) + '</div><div class="med-x"><b>' + esc(m.dose) + "</b></div></div>";
-    }).join("") + "</div>";
-
+    h += '<a class="jump" href="#analysis">Read the full analysis, what to watch for and what to improve →</a><br>';
     h += '<a class="jump" href="#research">See all ' + QUESTIONS.reduce(function (a, g) { return a + g.items.length; }, 0) +
       " questions for the doctor →</a>";
 
@@ -257,6 +260,268 @@
       "</button>" +
       '<div class="acc-body">' + bodyHtml + "</div>" +
     "</section>";
+  }
+
+  /* ----------------------------------------------- medication schedule -- */
+  function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
+  function medSchedule() {
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    return '<div class="card">' + STATUS.currentMeds.map(function (m) {
+      var bar = "", status = "", tone = "ok";
+      if (m.end) {
+        var st = d(m.start), en = d(m.end);
+        var total = daysBetween(st, en) + 1;
+        var gone = Math.min(total, Math.max(0, daysBetween(st, today) + 1));
+        var left = daysBetween(today, en);
+        var pct = Math.max(0, Math.min(100, Math.round((gone / total) * 100)));
+
+        if (left < 0) { status = "Finished " + fmt(m.end); tone = "done"; }
+        else if (left === 0) { status = "LAST DAY"; tone = "warn"; }
+        else { status = left + (left === 1 ? " day left" : " days left"); tone = left <= 2 ? "warn" : "ok"; }
+
+        /* one block per day: done | today | to come */
+        var segs = "", i;
+        for (i = 1; i <= total; i++) {
+          var cls = i < gone ? "done" : i === gone ? "now" : "todo";
+          if (left < 0) cls = "done";
+          segs += '<span class="seg ' + cls + '" title="Day ' + i + '"></span>';
+        }
+
+        var perDay = m.doses ? Math.round(m.doses / total) : null;
+        var dosesDone = perDay ? Math.min(m.doses, Math.max(0, gone * perDay)) : null;
+
+        bar =
+          '<div class="mtrack">' + segs + "</div>" +
+          '<div class="mbar-l">' +
+            "<span><b>Day " + Math.max(1, Math.min(gone, total)) + "</b> of " + total + " · " + pct + "% through</span>" +
+            (dosesDone !== null ? "<span>" + dosesDone + " of " + m.doses + " doses</span>" : "<span></span>") +
+          "</div>" +
+          '<div class="mdates"><span>Started ' + esc(fmt(m.start)) + '</span><span class="mend ' + tone + '">Last dose ' + esc(fmt(m.end)) + "</span></div>";
+      } else {
+        status = "As needed";
+        tone = "prn";
+        bar = '<div class="mtrack prn"><span class="seg prn"></span></div>' +
+              '<div class="mbar-l"><span>No fixed course</span><span>Started ' + esc(fmt(m.start)) + "</span></div>";
+      }
+      return '<div class="med cur medsched ' + tone + '">' +
+        '<div class="med-top"><div class="med-n">' + esc(m.name) + "</div>" +
+          '<div class="med-d ' + tone + '">' + esc(status) + "</div></div>" +
+        '<div class="med-g">' + esc(m.generic) + "</div>" +
+        '<div class="med-x"><b>' + esc(m.dose) + "</b> · " + esc(m.course) + " · for " + esc(m.why) + "</div>" +
+        bar +
+        (m.note ? '<div class="med-note">' + esc(m.note) + "</div>" : "") +
+      "</div>";
+    }).join("") + "</div>";
+  }
+
+  /* ------------------------------------------------------- stat details -- */
+  function statDetail(kind) {
+    if (kind === "crp") {
+      return '<div class="card statcard critical"><div class="card-pad">' +
+        "<h3>CRP — both readings</h3>" +
+        '<div class="kv"><span>18 Jul 2026</span><b>titre 48</b></div>' +
+        '<div class="kv"><span>21 Aug 2026</span><b>titre 96</b></div>' +
+        '<div class="kv"><span>Normal</span><b>under 6</b></div>' +
+        '<div class="callout warn" style="margin:12px 0 0"><span class="callout-h">Read this carefully</span>' +
+        "The report says <b>TITER</b>. This is a latex agglutination slide test, not a quantitative analyser. " +
+        "The value is 6 mg/L × the last dilution that clumped, so the only possible answers are 6, 12, 24, 48, 96, 192. " +
+        "<b>96 means somewhere between 96 and 191</b>, and 48→96 is one single step — the smallest change the method can show. " +
+        "CRP between 50 and 100 also overlaps heavily between viral and bacterial illness.</div>" +
+        '<a class="jump" href="#research/r-crp">Full explanation with method sheets →</a>' +
+        "</div></div>";
+    }
+    if (kind === "visits") {
+      var vs = TIMELINE.filter(function (e) { return e.kind === "visit"; }).sort(function (a, b) { return d(b.date) - d(a.date); });
+      return '<div class="card statcard"><div class="card-pad" style="padding-bottom:4px"><h3>Every clinic visit</h3></div>' +
+        vs.map(function (e) {
+          return '<a class="listrow" href="#timeline"><div><div class="lr-t">' + esc(e.title) + "</div>" +
+            '<div class="lr-s">' + esc(fmt(e.date)) + " · " + esc(e.facilityShort) + " · " + esc(e.clinician) + "</div></div>" +
+            '<span class="lr-c">' + svg("chevron") + "</span></a>";
+        }).join("") + "</div>";
+    }
+    if (kind === "cultures") {
+      var cs = LAB_VALUES.filter(function (r) { return r.c === "Culture" && r.t.indexOf("Ultrasound") < 0; })
+        .sort(function (a, b) { return d(b.d) - d(a.d); });
+      return '<div class="card statcard"><div class="card-pad" style="padding-bottom:4px"><h3>Every culture taken</h3>' +
+        '<p class="muted">Five urine cultures sent, one grew an organism. Two more ordered and never reported.</p></div>' +
+        cs.map(function (r) {
+          return '<div class="listrow"><div><div class="lr-t">' + esc(r.t) + " — " +
+            '<span class="pill ' + (r.x === "critical" ? "critical" : r.x === "warn" ? "warn" : "ok") + '">' + esc(r.v) + "</span></div>" +
+            '<div class="lr-s">' + esc(fmt(r.d)) + " · " + esc(r.s) + "</div></div></div>";
+        }).join("") + "</div>";
+    }
+    if (kind === "missing") {
+      return '<div class="card statcard critical"><div class="card-pad" style="padding-bottom:4px">' +
+        "<h3>What is missing</h3><p class=\"muted\">These were ordered or advised by a doctor. None appear in the paperwork. " +
+        "Quote the reference numbers at the counter.</p></div>" +
+        OUTSTANDING.slice().sort(function (a, b) { return a.priority - b.priority; }).map(function (o) {
+          var lab = o.date === "2026-08-21"
+            ? "Karuna Pathology · 011-665390 · Invoice GAOD0001656, Lab No 1656"
+            : o.date === "2026-07-18" ? "K.B. Hospital · 011-660781 · OPD No 189152 / PAOD0000097"
+            : o.date === "2026-05-31" ? "Scheer Memorial · UHID 509113 · advised at the 31 May visit"
+            : "Scheer Memorial · UHID 509113";
+          return '<div class="out-item"><div class="out-n' + (o.priority > 1 ? " p2" : "") + '">' + o.priority + "</div>" +
+            '<div style="flex:1"><div class="out-t">' + esc(o.item) + "</div>" +
+            '<div class="out-d">Ordered ' + esc(fmtLong(o.date)) + "</div>" +
+            '<div class="out-w">' + esc(o.why) + "</div>" +
+            '<div class="refchips"><span class="refchip"><b>Chase at:</b> ' + esc(lab) + "</span></div>" +
+            "</div></div>";
+        }).join("") + "</div>";
+    }
+    return "";
+  }
+
+  /* --------------------------------------------------------- SEARCH view */
+  var searchQ = "";
+  function sparkline(rows) {
+    var pts = rows.filter(function (r) { return typeof r.n === "number"; })
+      .sort(function (a, b) { return d(a.d) - d(b.d); });
+    if (pts.length < 2) return "";
+    var W = 96, H = 26, vals = pts.map(function (p) { return p.n; });
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    if (mx === mn) { mx = mn + 1; }
+    var x = function (i) { return (i / (pts.length - 1)) * (W - 4) + 2; };
+    var y = function (v) { return H - 3 - ((v - mn) / (mx - mn)) * (H - 8); };
+    var path = pts.map(function (p, i) { return (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p.n).toFixed(1); }).join(" ");
+    var last = pts[pts.length - 1];
+    var dir = last.n > pts[0].n ? "up" : last.n < pts[0].n ? "down" : "flat";
+    return '<svg class="spark ' + dir + '" viewBox="0 0 ' + W + " " + H + '" aria-hidden="true">' +
+      '<path d="' + path + '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle cx="' + x(pts.length - 1).toFixed(1) + '" cy="' + y(last.n).toFixed(1) + '" r="2.6" fill="currentColor"/></svg>';
+  }
+
+  function viewSearch() {
+    var h = '<div class="view-h"><h1>Search</h1><p>Every measured value in the record — ' + LAB_VALUES.length +
+      " results across blood, urine, stool, serology and vitals. Type a test name and see every time it was measured.</p></div>";
+
+    h += '<div class="searchbox"><span class="sicon">' + svg("search") + "</span>" +
+      '<input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Try CRP, weight, pus cells…" value="' + esc(searchQ) + '">' +
+      '<button class="sclear" id="qclear" aria-label="Clear search">' + svg("close") + "</button></div>";
+
+    h += '<div class="tl-filters">' + SEARCH_CHIPS.map(function (c) {
+      return '<button class="fbtn' + (searchQ.toLowerCase() === c.toLowerCase() ? " on" : "") + '" data-chip="' + esc(c) + '">' + esc(c) + "</button>";
+    }).join("") + "</div>";
+
+    h += '<div id="sresults">' + searchResults() + "</div>";
+    return h;
+  }
+
+  function searchResults() {
+    var q = searchQ.trim().toLowerCase();
+    var rows = LAB_VALUES;
+    if (q) {
+      var terms = q.split(/\s+/);
+      rows = LAB_VALUES.filter(function (r) {
+        var hay = (r.t + " " + r.a + " " + r.c + " " + r.v + " " + (r.p || "") + " " + r.s).toLowerCase();
+        return terms.every(function (t) { return hay.indexOf(t) >= 0; });
+      });
+    }
+    if (!rows.length) {
+      return '<div class="empty">Nothing matches “' + esc(searchQ) + '”.<br><span class="muted">Try CRP, haemoglobin, urine, pus, weight, culture, dengue or missing.</span></div>';
+    }
+
+    /* group by test name */
+    var groups = {}, order = [];
+    rows.forEach(function (r) { if (!groups[r.t]) { groups[r.t] = []; order.push(r.t); } groups[r.t].push(r); });
+
+    var head = '<div class="sres-count">' + rows.length + (rows.length === 1 ? " result" : " results") +
+      " across " + order.length + (order.length === 1 ? " test" : " tests") + "</div>";
+
+    return head + order.map(function (name) {
+      var g = groups[name].slice().sort(function (a, b) { return d(b.d) - d(a.d); });
+      var worst = ["critical", "warn", "watch", "ok", "muted"].filter(function (t) {
+        return g.some(function (r) { return r.x === t; });
+      })[0] || "ok";
+      var spark = sparkline(g);
+      return '<div class="card sgroup ' + worst + '">' +
+        '<div class="sgroup-h"><div><div class="sgroup-t">' + esc(name) + '</div>' +
+          '<div class="sgroup-s">' + esc(g[0].c) + " · " + g.length + (g.length === 1 ? " reading" : " readings") + "</div></div>" +
+          spark + "</div>" +
+        g.map(function (r) {
+          return '<div class="srow ' + esc(r.x) + '">' +
+            '<div class="srow-bar"></div>' +
+            '<div class="srow-main">' +
+              '<div class="srow-top"><span class="srow-v">' + esc(r.v) + (r.u ? ' <small>' + esc(r.u) + "</small>" : "") + "</span>" +
+                (r.f ? '<span class="flag ' + esc(r.x) + '">' + esc(r.f === "H" ? "HIGH" : r.f === "L" ? "LOW" : r.f) + "</span>" : "") +
+              "</div>" +
+              '<div class="srow-meta">' + esc(fmt(r.d)) + " · " + esc(r.s) +
+                (r.r ? ' · <span class="muted">ref ' + esc(r.r) + "</span>" : "") + "</div>" +
+              (r.p ? '<div class="srow-note">' + esc(r.p) + "</div>" : "") +
+              (r.e ? '<a class="srow-link" href="#timeline">See the record →</a>' : "") +
+            "</div></div>";
+        }).join("") +
+      "</div>";
+    }).join("");
+  }
+
+  /* ------------------------------------------------------- ANALYSIS view */
+  function viewAnalysis() {
+    var h = '<div class="view-h"><h1>Analysis</h1><p>A structured reading of the whole record: what the pattern shows, what is on the table for the current illness, what to watch for, and what to fix.</p></div>';
+
+    h += '<div class="callout critical"><span class="callout-h">Read this first</span>' + esc(ANALYSIS_META.disclaimer) +
+      '<div class="muted" style="margin-top:8px">Generated ' + esc(fmtLong(ANALYSIS_META.generated)) + " from " + esc(ANALYSIS_META.basis) + ".</div></div>";
+
+    h += '<div class="sec-h">What the pattern shows</div>';
+    h += PATTERNS.map(function (p) {
+      var body = '<div class="blk"><div class="blk-h">What the records show</div><ul>' +
+        p.evidence.map(function (e) { return "<li>" + esc(e) + "</li>"; }).join("") + "</ul></div>" +
+        '<div class="blk"><div class="blk-h">Reading it</div><p>' + esc(p.reading) + "</p></div>" +
+        '<div class="callout info"><span class="callout-h">Ask the doctor</span>' + esc(p.ask) + "</div>" +
+        (p.research ? '<a class="jump" href="#research/' + esc(p.research) + '">The guideline evidence behind this →</a>' : "");
+      return accordion(p.id, p.tone, "brain", p.title, null, body);
+    }).join("");
+
+    h += '<div class="sec-h">The current illness</div>';
+    h += '<div class="card"><div class="card-pad"><p>' + esc(CURRENT_EPISODE.summary) + "</p></div></div>";
+
+    h += '<div class="card"><div class="card-pad" style="padding-bottom:6px"><div class="blk-h" style="margin:0">Already ruled out</div></div>' +
+      CURRENT_EPISODE.excluded.map(function (x) {
+        return '<div class="dl-row"><div class="dl-t"><span class="pill ok">excluded</span> ' + esc(x.item) + "</div>" +
+          '<div class="dl-d">' + esc(x.detail) + "</div></div>";
+      }).join("") + "</div>";
+
+    h += '<div class="sec-h">On the table</div>';
+    h += '<div class="chart-note" style="padding:0 2px 10px">Possibilities the doctors raised, plus two that guideline and local research suggest are worth asking about. <b>These are questions, not diagnoses.</b> They are not ranked by likelihood.</div>';
+    h += CURRENT_EPISODE.onTable.map(function (o, i) {
+      var body =
+        '<div class="callout info" style="margin-top:12px"><span class="callout-h">Where this came from</span>' + esc(o.raisedBy) + "</div>" +
+        '<div class="blk"><div class="blk-h">Points towards it</div><ul>' +
+          o.forIt.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul></div>" +
+        '<div class="blk"><div class="blk-h">Points away from it</div><ul>' +
+          o.againstIt.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul></div>";
+      var tone = /NOT raised/.test(o.raisedBy) ? "warn" : "info";
+      return accordion("ot-" + i, tone, "flask", o.name,
+        /NOT raised/.test(o.raisedBy) ? "Not mentioned in any note — worth asking about" : "Raised by a treating doctor", body);
+    }).join("");
+
+    h += '<div class="card"><div class="card-pad" style="padding-bottom:6px"><div class="blk-h" style="margin:0">Never tested</div></div>' +
+      CURRENT_EPISODE.untested.map(function (t) {
+        return '<div class="dl-row"><div class="dl-d">' + esc(t) + "</div></div>";
+      }).join("") + "</div>";
+
+    h += '<div class="sec-h">Watch out for</div>';
+    h += WATCH_OUT.map(function (w) {
+      var tone = w.urgency === "emergency" ? "critical" : w.urgency === "sameday" ? "warn" : w.urgency === "kawasaki" ? "watch" : "info";
+      return '<div class="card watchcard ' + tone + '"><div class="card-pad">' +
+        '<div class="watch-h">' + svg(w.urgency === "meds" ? "pill" : "alert") + "<h3>" + esc(w.heading) + "</h3></div>" +
+        '<p class="muted" style="margin:6px 0 10px">' + esc(w.note) + "</p>" +
+        "<ul class=\"watchlist\">" + w.items.map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>" +
+      "</div></div>";
+    }).join("");
+
+    h += '<div class="sec-h">Things to improve</div>';
+    h += IMPROVEMENTS.map(function (m) {
+      var body = "<p>" + esc(m.body) + "</p>" +
+        '<div class="blk"><div class="blk-h">How</div><ul>' +
+          m.steps.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ul></div>";
+      return accordion(m.id, m.tone, "wrench", m.title, m.effort, body);
+    }).join("");
+
+    h += '<div class="sec-h">What this cannot know</div>';
+    h += '<div class="card"><div class="card-pad"><ul class="limits">' +
+      LIMITS.map(function (l) { return "<li>" + esc(l) + "</li>"; }).join("") + "</ul></div></div>";
+
+    return h;
   }
 
   /* ------------------------------------------------------- TIMELINE view */
@@ -491,7 +756,8 @@
   function closeLB() { el("lb").classList.remove("on"); document.body.style.overflow = ""; }
 
   /* --------------------------------------------------------------- routes */
-  var VIEWS = { home: viewHome, timeline: viewTimeline, results: viewResults, research: viewResearch, records: viewRecords };
+  var VIEWS = { home: viewHome, timeline: viewTimeline, results: viewResults, search: viewSearch,
+                analysis: viewAnalysis, research: viewResearch, records: viewRecords };
   var current = "home";
 
   function render(name) {
@@ -535,15 +801,17 @@
 
     /* nav */
     var NAV = [
-      { v: "home", l: "Overview", i: "home" },
+      { v: "home", l: "Home", i: "home" },
       { v: "timeline", l: "Timeline", i: "clock" },
       { v: "results", l: "Results", i: "chart" },
+      { v: "analysis", l: "Analysis", i: "brain" },
       { v: "research", l: "Research", i: "book" },
       { v: "records", l: "Records", i: "image" }
     ];
     el("nav").innerHTML = NAV.map(function (n) {
       return '<a class="nav-b" data-v="' + n.v + '" href="#' + n.v + '">' + svg(n.i) + "<span>" + n.l + "</span></a>";
     }).join("");
+    el("searchBtn").innerHTML = svg("search");
 
     applyTheme(store.get("theme", null));
     el("themeBtn").addEventListener("click", function () {
@@ -570,6 +838,34 @@
       var f = t.closest && t.closest(".fbtn[data-f]");
       if (f) { tlFilter = f.dataset.f; render("timeline"); return; }
 
+      var st = t.closest && t.closest(".stat[data-stat]");
+      if (st) {
+        var host = el("statDetail");
+        var kind = st.dataset.stat;
+        var isSame = host.dataset.open === kind;
+        Array.prototype.forEach.call(document.querySelectorAll(".stat[data-stat]"), function (b) { b.classList.remove("on"); });
+        if (isSame) { host.innerHTML = ""; host.dataset.open = ""; }
+        else {
+          host.innerHTML = statDetail(kind); host.dataset.open = kind; st.classList.add("on");
+          host.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        return;
+      }
+
+      var chip = t.closest && t.closest(".fbtn[data-chip]");
+      if (chip) {
+        searchQ = chip.dataset.chip;
+        render("search");
+        var qi = el("q"); if (qi) { qi.value = searchQ; }
+        return;
+      }
+
+      if (t.closest && t.closest("#qclear")) {
+        searchQ = ""; render("search");
+        var q2 = el("q"); if (q2) { q2.focus(); }
+        return;
+      }
+
       var g = t.closest && t.closest("[data-lb]");
       if (g) {
         var scope = g.closest(".gal") || g.closest(".thumbrow");
@@ -583,6 +879,18 @@
         var done = q.classList.toggle("done");
         store.set(q.dataset.q, done);
         return;
+      }
+    });
+
+    /* live search — re-renders only the results list so the input keeps focus */
+    document.addEventListener("input", function (ev) {
+      if (ev.target && ev.target.id === "q") {
+        searchQ = ev.target.value;
+        var host = el("sresults");
+        if (host) host.innerHTML = searchResults();
+        Array.prototype.forEach.call(document.querySelectorAll(".fbtn[data-chip]"), function (b) {
+          b.classList.toggle("on", b.dataset.chip.toLowerCase() === searchQ.trim().toLowerCase());
+        });
       }
     });
 

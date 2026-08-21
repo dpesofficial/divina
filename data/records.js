@@ -43,13 +43,26 @@ const STATUS = {
   since: "2026-08-17",
   detail:
     "Low-grade fever persisting since around 17 August, preceded by left eye swelling. " +
-    "CRP 96 mg/L (normal under 6). Dengue negative. Liver and kidney function normal. " +
+    "CRP raised at an estimated 96 mg/L — but by a semi-quantitative latex slide method, so read it as a band, not a precise figure. " +
+    "White cell count normal with a lymphocyte shift. Dengue negative. Liver and kidney function normal. " +
     "Started on amoxicillin-clavulanate 21 August. Blood culture sent — result outstanding.",
   currentMeds: [
-    { name: "Syp AMX-CV / Mega-CV Forte", generic: "Amoxicillin + clavulanate 457 mg/5 ml", dose: "4 ml PO BD", course: "7 days from 21 Aug" },
-    { name: "Syp NIKO", generic: "Paracetamol 125 mg/5 ml", dose: "8 ml PO as needed", course: "When temp ≥ 100 °F" },
-    { name: "Syp FEZA", generic: "Fexofenadine 30 mg/5 ml", dose: "5 ml PO BD", course: "1 week from 17 Aug" },
-    { name: "Unnamed syrup", generic: "Handwriting illegible on the page", dose: "5 ml PO OD", course: "2 weeks from 21 Aug" }
+    { name: "Syp AMX-CV / Mega-CV Forte", generic: "Amoxicillin + clavulanate 457 mg/5 ml", dose: "4 ml PO BD",
+      course: "7 days", start: "2026-08-21", end: "2026-08-27", doses: 14,
+      why: "Persistent fever with raised CRP",
+      note: "Finish the full course even if the fever settles. The date the course ends is also the natural point to reassess — if she is no better by then, that is information the doctor needs." },
+    { name: "Syp FEZA", generic: "Fexofenadine 30 mg/5 ml", dose: "5 ml PO BD",
+      course: "1 week", start: "2026-08-17", end: "2026-08-23", doses: 14,
+      why: "Eye swelling, treated as allergy",
+      note: "Antihistamine. If the swelling has fully gone by the end date it does not need continuing without asking." },
+    { name: "Unnamed syrup", generic: "Handwriting illegible on the page", dose: "5 ml PO once daily",
+      course: "2 weeks", start: "2026-08-21", end: "2026-09-03", doses: 14,
+      why: "Unknown — the name cannot be read",
+      note: "Identify this before giving any more of it. Take the bottle or the prescription page back to the clinic." },
+    { name: "Syp NIKO", generic: "Paracetamol 125 mg/5 ml", dose: "8 ml PO as needed",
+      course: "As needed, no fixed end", start: "2026-08-19", end: null, doses: null,
+      why: "Fever, when temperature reaches 100 °F",
+      note: "PRN only. Check the 24-hour total if any other paracetamol preparation is also in use — Pacimol, NIKO and Meftal have all appeared in this record." }
   ]
 };
 
@@ -61,11 +74,13 @@ const KEY_FINDINGS = [
     tone: "critical",
     icon: "thermometer",
     title: "Unexplained fever, ongoing",
-    oneLiner: "Low-grade fever since 17 Aug. CRP 96. No diagnosis yet.",
-    stat: { value: "96", unit: "mg/L", label: "CRP (normal < 6)" },
+    oneLiner: "Low-grade fever since 17 Aug. CRP raised, but by a coarse method. No diagnosis yet.",
+    stat: { value: "~96", unit: "mg/L", label: "CRP estimate · semi-quantitative" },
     body: [
       "Started with swelling around the left eye on 17 August, attributed to a possible insect bite or allergy. Fever followed and has not settled.",
-      "On 21 August the paediatrician ordered a full workup: CBC, CRP, LFT, RFT, blood culture, urine R/E and urine culture. CRP came back at 96 mg/L. Dengue NS1, IgM and IgG were all negative. Liver and kidney function were normal.",
+      "On 21 August the paediatrician ordered a full workup: CBC, CRP, LFT, RFT, blood culture, urine R/E and urine culture. Dengue NS1, IgM and IgG were all negative. Liver and kidney function were normal.",
+      "IMPORTANT ON THE CRP. The report says TITER, which means this is a latex agglutination slide test, not a quantitative analyser. The result is worked out as 6 mg/L multiplied by the last dilution that clumped, which is exactly why the two readings are 48 and 96 — steps on a doubling scale. Read 96 as somewhere in the 96 to 191 band, not as a precise figure. The move from 48 to 96 is one single step, the smallest change this test can register.",
+      "It is genuinely raised. But CRP between 50 and 100 overlaps heavily between viral and bacterial illness, and a single reading cannot separate the two. Her white cell count is normal at 9,400, with lymphocytes up to 40% and neutrophils down to 55% — a pattern that leans viral rather than bacterial, without settling it.",
       "She was started on amoxicillin-clavulanate. The blood culture result is not in the records and is the single most important outstanding item."
     ],
     links: ["r-crp", "r-nepal", "r-eye"]
@@ -516,7 +531,7 @@ const TIMELINE = [
     title: "Full blood count and CRP",
     tags: ["CBC", "CRP", "Abnormal"],
     tone: "warn",
-    summary: "White cells raised at 12,000. CRP positive at 48 (normal under 6).",
+    summary: "White cells raised at 12,000 with 65% neutrophils. CRP positive at an estimated 48 by latex titre.",
     blocks: [
       { h: "Blood count", items: [
         "Haemoglobin 12.0 g/dL",
@@ -525,7 +540,7 @@ const TIMELINE = [
         "RBC 4.5 million", "PCV 33%", "MCV 75 fL", "MCH 26 pg", "MCHC 35%",
         "Platelets 268,000"
       ]},
-      { h: "Inflammation", items: ["CRP POSITIVE, titre 48 (normal < 6)"] }
+      { h: "Inflammation", items: ["CRP POSITIVE, titre 48 (normal < 6)", "Same latex titre method — one dilution step below the 21 August reading."] }
     ],
     images: ["p03.jpg"],
     notes: ["The PCV and MCV 'low' flags are against adult reference ranges. See the Results tab."]
@@ -675,7 +690,7 @@ const TIMELINE = [
     title: "Fever persisting — full workup ordered",
     tags: ["Fever", "Workup", "Most recent"],
     tone: "critical",
-    summary: "Low-grade fever has not settled. Cough present. Full blood workup ordered including blood culture. CRP comes back at 96.",
+    summary: "Low-grade fever has not settled. Cough present. Full blood workup ordered including blood culture.",
     blocks: [
       { h: "Findings", items: [
         "Low-grade fever has PERSISTED, maximum 100 °F",
@@ -687,7 +702,7 @@ const TIMELINE = [
         "Full blood count", "CRP", "Liver function tests", "Renal function tests",
         "BLOOD CULTURE", "Urine R/E", "Urine culture and sensitivity"
       ]},
-      { h: "Noted in chart", items: ["CRP 96 mg/L", "Rest of the blood count unremarkable"] },
+      { h: "Noted in chart", items: ["CRP 96 mg/L (latex titre estimate)", "Rest of the blood count unremarkable"] },
       { h: "Advice", items: ["Danger signs explained", "Follow up as needed"] }
     ],
     meds: [
@@ -739,9 +754,9 @@ const TIMELINE = [
     title: "CRP, dengue, liver and kidney function",
     tags: ["CRP", "Dengue", "LFT", "RFT", "Key result"],
     tone: "critical",
-    summary: "CRP 96 — sixteen times the upper limit. Dengue negative on all three tests. Liver and kidney function normal.",
+    summary: "CRP raised at an estimated 96 by latex titre. Dengue negative on all three tests. Liver and kidney function normal.",
     blocks: [
-      { h: "Inflammation", items: ["CRP POSITIVE, titre 96 (normal < 6)"] },
+      { h: "Inflammation", items: ["CRP POSITIVE, titre 96 (normal < 6)", "Method: latex agglutination slide test, semi-quantitative. Value = 6 mg/L x last dilution showing clumping.", "Interpret as a band of roughly 96-191 mg/L, not an exact figure."] },
       { h: "Dengue", items: ["NS1 antigen — NEGATIVE", "IgM — NEGATIVE", "IgG — NEGATIVE"] },
       { h: "Liver function", items: [
         "Total bilirubin 0.6 mg/dl", "Direct bilirubin 0.1 mg/dl",
@@ -781,7 +796,7 @@ const CHARTS = {
   crp: {
     title: "CRP (inflammation marker)",
     unit: "mg/L",
-    note: "Normal is under 6. These are two separate illness episodes five weeks apart, not one rising curve.",
+    note: "Semi-quantitative latex titre, so the only possible values are 6, 12, 24, 48, 96, 192. The gap between the two bars is ONE dilution step — the smallest change the test can show. These are also two separate illness episodes five weeks apart, not one rising curve.",
     threshold: 6,
     points: [
       { date: "2026-07-18", value: 48, label: "Fever + urinary symptoms" },
@@ -814,7 +829,7 @@ const CBC_TABLE = {
     { name: "PCV / haematocrit", unit: "%", jul: "33", aug: "35", labRange: "34–50", labFlag: "LOW in Jul", pedRange: "~34–40 at 2–6 years", verdict: "Borderline in July, normal in August", verdictTone: "ok" },
     { name: "MCV", unit: "fL", jul: "75", aug: "76", labRange: "77–95", labFlag: "LOW", pedRange: "Lower limit ~74 at 1.5–4 years", verdict: "Normal for age", verdictTone: "ok" },
     { name: "Platelets", unit: "/cumm", jul: "268,000", aug: "220,000", labRange: "150,000–410,000", labFlag: "—", pedRange: "—", verdict: "Normal", verdictTone: "ok" },
-    { name: "CRP", unit: "mg/L", jul: "48", aug: "96", labRange: "< 6", labFlag: "POSITIVE", pedRange: "Same in children", verdict: "Genuinely raised — this flag stands", verdictTone: "critical" },
+    { name: "CRP", unit: "mg/L (estimated)", jul: "48", aug: "96", labRange: "< 6", labFlag: "POSITIVE", pedRange: "Semi-quantitative latex titre: 6 × dilution. Scale is 6, 12, 24, 48, 96, 192.", verdict: "Raised, but a coarse band not a precise number. 48→96 is one dilution step.", verdictTone: "critical" },
     { name: "Creatinine", unit: "mg/dL", jul: "—", aug: "0.5", labRange: "0.6–1.4", labFlag: "LOW", pedRange: "0.30–0.50 at ages 2–4", verdict: "Normal for age", verdictTone: "ok" }
   ]
 };
@@ -914,19 +929,50 @@ const RESEARCH = [
   {
     id: "r-crp",
     tone: "warn",
-    title: "What a CRP of 96 does and does not tell you",
-    lead: "High, pointing towards bacterial, but not proof of anything.",
+    title: "The CRP of 96 — what the number actually is",
+    lead: "It is a semi-quantitative estimate on a doubling scale, not a precise measurement. And in this range it cannot tell viral from bacterial.",
     body: [
-      "CRP is a general inflammation marker. It tells you something is inflamed. It does not tell you what or where.",
-      "CRP above 40 mg/L has about 88% specificity for bacterial rather than viral infection, with a positive predictive value around 76%.",
-      "CRP of 100 mg/L or more is strongly associated with bacterial infection. At 96 she sits just under that.",
-      "Important caveat: some viruses, notably adenovirus, can push CRP over 100. A high CRP alone is not proof of bacterial infection.",
-      "CRP below 40 does not rule bacterial infection out either — sensitivity is only around 55%.",
-      "Her CRP was 48 on 18 July and 96 on 21 August. These are two separate illness episodes five weeks apart, not one rising trend. Do not read them as a curve."
+      "Two things have to be separated here: how the number was produced, and what a number like that means.",
+      "HOW IT WAS PRODUCED. The report prints 'C-REACTIVE PROTEIN (CRP) TITER :- 96'. The word titer is the giveaway. This is a latex agglutination slide test: the serum is diluted 1:2, 1:4, 1:8, 1:16 and so on, and the technician reports the last dilution at which visible clumping occurs. The concentration is then calculated as the reagent sensitivity, 6 mg/L, multiplied by that dilution.",
+      "That is why her two results are 48 and 96. 6 x 8 = 48. 6 x 16 = 96. The only values this test can ever return are 6, 12, 24, 48, 96, 192, 384. It is a coarse ladder, not a continuous scale.",
+      "So 96 does not mean 96. It means the sample still clumped at 1:16 but not at 1:32, so the true value sits somewhere between roughly 96 and 191 mg/L. And the step from 48 to 96 is a single rung on that ladder — the smallest change the method is capable of showing. It could reflect a real rise, or two runs landing either side of one dilution.",
+      "This is not a criticism of the lab. Latex agglutination is a legitimate, inexpensive, widely used method. It is simply less precise than the immunoturbidimetric CRP that a larger laboratory would run, and the result has to be read with that in mind.",
+      "WHAT A NUMBER LIKE THAT MEANS. CRP is a general inflammation marker. It tells you something is inflamed. It does not tell you what, or where, or whether it is bacterial.",
+      "Published data puts moderate elevations of roughly 10 to 80 mg/L squarely in the zone where bacterial and viral infection overlap and cannot be separated. Research looking specifically at the 50 to 100 mg/L band found that CRP could not significantly distinguish bacterial from viral cases within it.",
+      "Above 100 mg/L the association with bacterial infection strengthens, but even there it is not absolute — adenovirus and several other viruses regularly push CRP past 100.",
+      "The consistent finding across the literature is that serial CRP measurements are far more informative than any single value. A falling CRP supports the treatment working. A rising one suggests deterioration. One reading in isolation, on a coarse method, in the overlap zone, is weak evidence on its own.",
+      "WHAT SITS ALONGSIDE IT IN HER CASE. On 21 August her total white cell count was normal at 9,400. Lymphocytes had risen to 40% and neutrophils fallen to 55%, compared with 30% and 65% in July. A normal white count with a lymphocyte-predominant differential is a pattern more often seen in viral illness. A bacterial infection driving CRP into that range would more typically come with a raised white count and neutrophilia.",
+      "None of that is proof of anything either. It is a reason to ask the question rather than assume the answer, and a strong reason to want the blood culture result and a repeat CRP."
+    ],
+    subsections: [
+      {
+        h: "The full ladder this test can report",
+        items: [
+          "1:1 not diluted — 6 mg/L, the detection threshold",
+          "1:2 — 12 mg/L",
+          "1:4 — 24 mg/L",
+          "1:8 — 48 mg/L  (her 18 July result)",
+          "1:16 — 96 mg/L  (her 21 August result)",
+          "1:32 — 192 mg/L",
+          "Nothing in between these values can be reported"
+        ]
+      },
+      {
+        h: "Worth asking the doctor",
+        items: [
+          "Can a quantitative CRP be run rather than the latex slide test, so the number can be tracked properly?",
+          "Can the CRP be repeated now to see whether it is falling on the antibiotic? The direction of travel is more useful than the single value.",
+          "Does the normal white count with a lymphocyte shift change the thinking about whether this is bacterial?"
+        ]
+      }
     ],
     sources: [
-      { label: "C-reactive protein in pediatric infectious diseases", url: "https://www.sciencedirect.com/science/article/abs/pii/S2212832812000094" },
-      { label: "CRP as a marker for bacterial infection in febrile children", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10361518/" }
+      { label: "CRP-Latex slide agglutination method sheet — Spinreact (titre = sensitivity x dilution)", url: "https://www.spinreact.com/files/Inserts/Serologia/SGIS03_-_Ref._1200301_PCR_Latex_03-2013.pdf" },
+      { label: "CRP-LATEX method sheet — Biolabo (6 mg/L sensitivity, serial two-fold dilutions)", url: "https://www.biolabo.fr/pdfs/noticesE/serologieE/AT-097100-CRP.pdf" },
+      { label: "C-reactive protein test: principle, procedure and result — Microbe Online", url: "https://microbeonline.com/c-reactive-protein-crp-test/" },
+      { label: "Differentiating bacterial from viral infections by estimated CRP velocity — PLOS One", url: "https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0277401" },
+      { label: "CRP overlap between bacterial and viral infection — WikEM summary", url: "https://wikem.org/wiki/CRP" },
+      { label: "C-reactive protein in pediatric infectious diseases", url: "https://www.sciencedirect.com/science/article/abs/pii/S2212832812000094" }
     ]
   },
   {

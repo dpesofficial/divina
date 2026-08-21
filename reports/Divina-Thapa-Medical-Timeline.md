@@ -166,10 +166,12 @@ Dates are recorded in both Bikram Sambat (BS) and Gregorian (AD) on the original
 
 ### Inflammatory marker (CRP, normal < 6)
 
-| Date | CRP titre |
-|---|---|
-| 18 Jul 2026 | 48 |
-| 21 Aug 2026 | **96** |
+| Date | CRP titre | Dilution | Meaning |
+|---|---|---|---|
+| 18 Jul 2026 | 48 | 1:8 | somewhere in the 48–95 band |
+| 21 Aug 2026 | **96** | 1:16 | somewhere in the 96–191 band |
+
+**These are not precise numbers.** The reports say *TITER*, which means a latex agglutination slide test: value = 6 mg/L × the last dilution that clumped. The only possible results are 6, 12, 24, 48, 96, 192. The step from 48 to 96 is one single dilution — the smallest change the method can show. CRP between 50 and 100 also overlaps heavily between viral and bacterial illness and cannot separate them on its own.
 
 ### Full blood count
 
@@ -219,7 +221,7 @@ Net change from the 31 May peak: **−0.8 kg over about eleven weeks.** Height w
 
 **Active / recent problems**
 1. Persistent low-grade fever since around 17 Aug 2026, with cough, on antibiotics since 21 Aug — under active investigation
-2. Rising CRP (48 → 96) with no organism identified yet; dengue excluded 21 Aug
+2. Raised CRP with no organism identified yet; dengue excluded 21 Aug. Note the CRP is a semi-quantitative latex titre, so 48 → 96 is one dilution step, not a precise doubling. White cell count normal at 9,400 with a lymphocyte shift.
 3. Left periorbital / eye swelling, recurrent, cause undetermined (? insect bite, ? allergy)
 4. Recurrent urinary symptoms and vulval itching / vulvovaginitis, first documented as a 3-month history in May 2026; one confirmed E. coli UTI
 5. Allergic rhinitis (diagnosed 7 May 2026)
